@@ -1,0 +1,102 @@
+# ==============================================================================
+# MarsWalk - Comprehensive Git Ignore
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# Large Satellite & Terrain Rasters (>50 MB)
+# Re-downloadable on demand using scripts/fetch_big.py and scripts/fetch_data.py
+# ------------------------------------------------------------------------------
+*.tif
+*.tiff
+*.tif.part
+*.part
+data/*.tif
+data/jezero_dem_20m.tif
+data/jezero_hirise_dtm_1m.tif
+data/jezero_ortho_5m.tif
+data/jezero_trn_dtm_20m.tif
+
+# ------------------------------------------------------------------------------
+# Computed Raw Raster Grids (~260 MB of float32 arrays)
+# Rebuilt automatically by scripts/preprocess.py and scripts/train_ml.py
+# The display PNGs in layers/ are tracked so the map renders immediately
+# ------------------------------------------------------------------------------
+layers/*.npy
+
+# ------------------------------------------------------------------------------
+# Data Cache Directories (Fetched or cached on demand)
+# ------------------------------------------------------------------------------
+data/photo_cache/
+data/trek_themis/
+data/trek_mola/
+data/cache/
+
+# ------------------------------------------------------------------------------
+# Python & Virtual Environments
+# ------------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+env/
+
+# ------------------------------------------------------------------------------
+# Testing & Code Quality
+# ------------------------------------------------------------------------------
+.cache
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ------------------------------------------------------------------------------
+# Secrets, Tokens & Environment Configs (NEVER COMMIT CREDENTIALS)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.token
+push-to-github.ps1
+push-to-github.sh
+
+# ------------------------------------------------------------------------------
+# Logs & Process Artifacts
+# ------------------------------------------------------------------------------
+*.log
+uvicorn.log
+uvicorn_demo.log
+
+# ------------------------------------------------------------------------------
+# Operating System & IDE Files
+# ------------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.kilo/

@@ -1,0 +1,7 @@
+   0.20 MB spk/m2020_surf_rover_loc_0779_0899_v1.bsp
+   0.47 MB spk/m2020_surf_rover_loc_0899_1019_v1.bsp
+   0.35 MB spk/m2020_surf_rover_loc_1019_1139_v1.bsp
+   0.37 MB spk/m2020_surf_rover_loc_1139_1259_v1.bsp
+   0.51 MB spk/m2020_surf_rover_loc_1259_1379_v1.bsp
+   0.08 MB fk/m2020.tf
+DONE 20 files

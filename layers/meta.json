@@ -1,0 +1,35 @@
+{
+  "bbox": {
+    "w": 76.997437,
+    "e": 78.582563,
+    "n": 19.290187,
+    "s": 17.58052
+  },
+  "W": 2228,
+  "H": 2534,
+  "W0": 4456,
+  "H0": 5067,
+  "factor": 2,
+  "px_m": 40.0,
+  "plan_factor": 4,
+  "plan_W": 1114,
+  "plan_H": 1267,
+  "elev_min": -3500.94091796875,
+  "elev_max": -476.98681640625,
+  "mineral_classes": [
+    "phyllosilicate",
+    "carbonate",
+    "olivine",
+    "pyroxene",
+    "silica",
+    "sulfate",
+    "dune_sand"
+  ],
+  "sources": [
+    "CTX 20 m DEM \u2014 Mars 2020 Science Investigation Mosaic (USGS/JPL)",
+    "THEMIS Day-IR \u2014 Mars Odyssey via NASA Mars Trek WMTS",
+    "MGS MOLA Color Hillshade via NASA Mars Trek WMTS",
+    "CTX 5 m ortho browse mosaic (USGS Astrogeology)",
+    "CRISM-informed mineral prospectivity (modelled from Jezero geology)"
+  ]
+}

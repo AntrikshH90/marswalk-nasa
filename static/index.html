@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>MARSWALK — Interplanetary Survival Guide · Jezero EVA Planner</title>
+<link rel="stylesheet" href="/static/css/styles.css"/>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='13' fill='%23c1440e'/><circle cx='11' cy='12' r='3' fill='%23a03a0c'/><circle cx='21' cy='18' r='4' fill='%23d85a24'/></svg>"/>
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="brand">
+      <svg class="mark" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="16" fill="none" stroke="#ff6b35" stroke-width="2"/>
+        <ellipse cx="20" cy="20" rx="16" ry="6" fill="none" stroke="#ffb02e" stroke-width="1.2" transform="rotate(-24 20 20)"/>
+        <circle cx="14" cy="15" r="3.2" fill="#8b3a1a"/>
+        <circle cx="25" cy="24" r="4.5" fill="#d85a24" opacity=".9"/>
+      </svg>
+      <div class="titles">
+        <span class="name">MARSWALK</span>
+        <span class="sub">INTERPLANETARY SURVIVAL GUIDE · JEZERO THEATRE</span>
+      </div>
+    </div>
+    <div class="clock">
+      <span class="pill" id="hud-sol" title="Martian solar day since Mars 2020 landing">SOL ··</span>
+      <span class="pill" id="hud-ls" title="Aerocentric longitude of the Sun (season)">Ls ··°</span>
+      <span class="pill" id="hud-lmst" title="Local mean solar time at Jezero (77.45°E)">LMST ··:··</span>
+      <span class="pill mono" id="hud-utc">UTC —</span>
+      <span class="pill ok" id="hud-live">◉ LINK…</span>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="btn-3d">◳ 3D TERRAIN</button>
+      <button class="btn primary" id="btn-export">⤓ EXPORT EVA PLAN</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= LEFT ================= -->
+    <aside id="left">
+      <section class="panel">
+        <h2 class="px">MAP LAYERS</h2>
+        <div class="lbl">BASE</div>
+        <div id="base-layers" class="layer-list"></div>
+        <div class="lbl row"><span>OVERLAYS</span>
+          <label class="mini">OPACITY <input type="range" id="overlay-opacity" min="10" max="100" value="65"/></label>
+        </div>
+        <div id="overlay-layers" class="layer-list"></div>
+        <div id="legend"></div>
+      </section>
+
+      <section class="panel">
+        <h2 class="px">EVA PARAMETERS</h2>
+        <div class="grid2">
+          <label class="fld">CREW
+            <div class="stepper">
+              <button data-step="-1">−</button><span id="crew-n">2</span><button data-step="1">+</button>
+            </div>
+          </label>
+          <label class="fld">MAX SLOPE <span id="slope-v" class="val">20°</span>
+            <input type="range" id="max-slope" min="8" max="30" value="20"/>
+          </label>
+        </div>
+        <label class="check"><input type="checkbox" id="prefer-science" checked/> ML-optimize path toward science value</label>
+        <button class="btn go" id="btn-plan">▲ PLAN EVA ROUTE</button>
+        <div class="hint">Click map in <b>ADD WAYPOINT</b> mode, or add targets from the right panel.</div>
+      </section>
+
+      <section class="panel">
+        <h2 class="px">ROUTE LEGS <button class="link" id="btn-clear">clear</button></h2>
+        <ol id="legs" class="legs"></ol>
+      </section>
+
+      <section class="panel" id="conditions">
+        <h2 class="px">SURFACE CONDITIONS <span id="cond-origin" class="badge">—</span></h2>
+        <div class="cond-grid">
+          <div class="gauge">
+            <div class="gval" id="dust-tau">–</div>
+            <div class="glbl">DUST OPACITY τ</div>
+            <div class="gbar"><i id="dust-bar" style="width:10%"></i></div>
+            <div class="gsub" id="dust-risk">—</div>
+          </div>
+          <div class="gauge">
+            <div class="gval" id="rad-level">–</div>
+            <div class="glbl">RADIATION</div>
+            <div class="gbar"><i id="rad-bar" class="rad" style="width:30%"></i></div>
+            <div class="gsub" id="rad-sub">—</div>
+          </div>
+        </div>
+        <div class="advisory" id="advisory">Awaiting space-weather link…</div>
+        <div class="eva-badge" id="eva-go">EVA STATUS · CHECKING</div>
+      </section>
+    </aside>
+
+    <!-- ================= CENTER ================= -->
+    <section id="center">
+      <canvas id="map"></canvas>
+      <div id="map-tools">
+        <button class="tool active" data-mode="nav" title="Pan & zoom">✥ NAVIGATE</button>
+        <button class="tool" data-mode="plan" title="Click to append waypoint">＋ WAYPOINT</button>
+        <span class="tsep"></span>
+        <button class="tool active" id="btn-rover" title="Show the rover's real driven track from NASA/NAIF SPICE kernels">◎ ROVER TRACK</button>
+        <span class="tsep"></span>
+        <button class="tool squ" id="zoom-in">＋</button>
+        <button class="tool squ" id="zoom-out">－</button>
+        <button class="tool" id="zoom-fit">FIT</button>
+        <button class="tool" id="btn-home" title="Fly to HAB">⌂ HAB</button>
+      </div>
+      <div id="map-hud" class="hud">
+        <span id="hud-coord" class="mono">—</span>
+        <span id="hud-elev">ELEV —</span>
+        <span id="hud-slope">SLOPE —</span>
+        <span id="hud-min">UNIT —</span>
+        <span id="hud-trav">TRAVERSE —</span>
+      </div>
+      <div id="layer-chip" class="chip"></div>
+      <div id="rover-note" class="rover-note"></div>
+      <div id="toast" class="toast hidden"></div>
+      <div id="map-loading" class="loading"><div class="spin"></div><span>ACQUIRING TERRAIN…</span></div>
+    </section>
+
+    <!-- ================= RIGHT ================= -->
+    <aside id="right">
+      <nav class="tabs">
+        <button class="tab active" data-tab="targets">SCIENCE TARGETS</button>
+        <button class="tab" data-tab="inspector">INSPECTOR</button>
+        <button class="tab" data-tab="live">LIVE FEED</button>
+      </nav>
+      <div class="tabpane active" id="pane-targets">
+        <div class="pane-note">Ranked by ML <b>science × traversability</b>. Click to inspect · <span class="addhint">＋ ADD</span> appends to route.</div>
+        <div id="target-list" class="cards"></div>
+      </div>
+      <div class="tabpane" id="pane-inspector">
+        <div id="inspector-body" class="empty">Click the map or a target marker.</div>
+      </div>
+      <div class="tabpane" id="pane-live">
+        <div class="pane-note">Surface imagery via <b>NASA Image &amp; Video Library</b> · space weather via <b>DONKI</b>.</div>
+        <div id="flare-box" class="flares"></div>
+        <div class="lbl">MARS SURFACE GALLERY</div>
+        <div id="photo-grid" class="photos"><div class="loading sm"><div class="spin"></div></div></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ================= BOTTOM PROFILE ================= -->
+  <footer id="bottom">
+    <div id="profile-stats">
+      <div class="stat"><b id="st-dist">—</b><span>DISTANCE km</span></div>
+      <div class="stat"><b id="st-time">—</b><span>EVA TIME h</span></div>
+      <div class="stat"><b id="st-ascent">—</b><span>ASCENT m</span></div>
+      <div class="stat"><b id="st-grade">—</b><span>MAX GRADE</span></div>
+      <div class="stat"><b id="st-trav">—</b><span>TRAVERSABILITY</span></div>
+      <div class="stat"><b id="st-o2">—</b><span>O₂ kg</span></div>
+      <div class="stat"><b id="st-water">—</b><span>H₂O L</span></div>
+      <div class="stat"><b id="st-power">—</b><span>POWER kWh</span></div>
+      <div class="stat warnstat"><b id="st-warn">—</b><span>ADVISORIES</span></div>
+    </div>
+    <canvas id="profile"></canvas>
+    <div id="sources"></div>
+  </footer>
+</div>
+
+<!-- 3D viewer -->
+<div id="view3d" class="hidden">
+  <canvas id="c3d"></canvas>
+  <div class="v3-hud">
+    <div class="v3-title">JEZERO 3D · CTX 20 m DEM <span id="v3-info"></span></div>
+    <div class="v3-help">drag = orbit · wheel = zoom · right-drag = pan</div>
+  </div>
+  <button id="v3-close">✕ ESC</button>
+</div>
+
+<script type="module" src="/static/js/app.js"></script>
+</body>
+</html>

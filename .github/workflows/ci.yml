@@ -1,0 +1,47 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    name: Build, Lint & Verify (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint and Syntax Check
+        run: |
+          # Stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=.venv,venv,data,layers,shots
+          # Exit-zero treats all other warnings as non-fatal
+          flake8 . --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics --exclude=.venv,venv,data,layers,shots
+
+      - name: Test Application Import
+        run: |
+          python -c "import app.main; print('FastAPI app loaded successfully')"
+
+      - name: Run Model & Validation Verification
+        run: |
+          python scripts/verify_validation.py

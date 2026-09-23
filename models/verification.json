@@ -1,0 +1,107 @@
+{
+  "generated_utc": "2026-09-23T07:41:23Z",
+  "mars_time": {
+    "rems": {
+      "instrument": "REMS / Curiosity, Gale Crater",
+      "n_measurements": 4745,
+      "span": [
+        "2012-08-07",
+        "2026-08-25"
+      ],
+      "ls_rms_deg": 0.646,
+      "ls_mean_deg": 0.555,
+      "ls_max_abs_deg": 1.412,
+      "sol_numbers_reproduced": 4745,
+      "note": "REMS reports Ls truncated to whole degrees, which by itself produces a +0.5 deg mean offset and floors the RMS near 1/sqrt(12) = 0.289 deg. The measured mean of about +0.55 deg is that truncation artefact, so the model is not systematically biased; MEDA, which reports decimals, shows the true residual."
+    },
+    "meda": {
+      "instrument": "MEDA / Perseverance, Jezero Crater (the mission site)",
+      "n_measurements": 7,
+      "span": [
+        "2024-04-27",
+        "2024-04-21"
+      ],
+      "ls_rms_deg": 0.107,
+      "ls_max_abs_deg": 0.153,
+      "sol_numbers_reproduced": 7
+    },
+    "model": {
+      "method": "Kepler's equation from JPL/Standish Mars orbital elements, refined by least squares on the older half of the REMS record and scored on the held-out newer half",
+      "fitted": {
+        "M0_deg": 19.32994,
+        "mean_motion_deg_per_day": 0.5240196,
+        "eccentricity": 0.0934006,
+        "perihelion_ls_deg": 250.981
+      },
+      "sol_definition": "sol boundaries at local mean solar midnight, sol 0 on the landing sol"
+    }
+  },
+  "georeference": {
+    "source": "USGS/JPL M20_JezeroCrater_CTXDEM_20m.tif product metadata + GeoTIFF tags",
+    "bbox": {
+      "w": 76.997437,
+      "e": 78.582563,
+      "n": 19.290187,
+      "s": 17.58052
+    },
+    "raster_px": [
+      4456,
+      5067
+    ],
+    "pixel_size_m": 20.0,
+    "x_agreement_pct": 0.018,
+    "y_agreement_pct": 0.0,
+    "note": "linear pixel-to-lon/lat mapping is valid because the projection scales longitude by cos(centre lat)"
+  },
+  "terrain": {
+    "grid": [
+      2534,
+      2228
+    ],
+    "working_resolution_m": 40.0,
+    "planning_resolution_m": 80.0,
+    "elevation_m": [
+      -3500.9,
+      -477.0
+    ],
+    "slope_deg": {
+      "mean": 6.24,
+      "median": 4.42,
+      "p99": 30.11,
+      "max": 86.0
+    },
+    "roughness_m": {
+      "mean": 6.22,
+      "p98": 24.1
+    }
+  },
+  "ml_models": {
+    "traversability_acc": 0.7797,
+    "traversability_clean_acc": 0.9913,
+    "science_r2": 0.8514,
+    "n_samples": 250000,
+    "n_targets": 12
+  },
+  "source_data": [
+    {
+      "file": "jezero_dem_20m.tif",
+      "bytes": 90345300,
+      "sha256_16": "ba7f706ea1b5d63a"
+    },
+    {
+      "file": "fallback_photos/index.jsonl",
+      "bytes": 4392,
+      "sha256_16": "407f5e2119d50ee3"
+    },
+    {
+      "file": "mars_weather_fallback.json",
+      "bytes": 5857,
+      "sha256_16": "87d18935d95ecf0d"
+    },
+    {
+      "file": "donki_flr_fallback.json",
+      "bytes": 1601,
+      "sha256_16": "9f923d6aaeaf3914"
+    }
+  ]
+}
